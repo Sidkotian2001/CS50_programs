@@ -1,0 +1,104 @@
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+// Max number of candidates
+#define MAX 9
+
+// Candidates have name and vote count
+typedef struct
+{
+    string name;
+    int votes;
+}
+candidate;
+
+
+
+candidate candidates[MAX];   // Array of candidates
+int candidate_count;    // Number of candidates
+
+// Function prototypes
+bool vote(string name);
+void print_winner(void);
+
+
+
+
+
+
+int main(int argc, string argv[])
+{
+
+    if (argc < 2)  // Check for invalid usage
+    {
+        printf("Usage: plurality [candidate ...]\n");
+        return 1;
+    }
+
+    candidate_count = argc - 1;   // Populate array of candidates
+
+    if (candidate_count > MAX)
+    {
+        printf("Maximum number of candidates is %i\n", MAX);
+        return 2;
+    }
+    for (int i = 0; i < candidate_count; i++)
+    {
+        candidates[i].name = argv[i + 1];
+        candidates[i].votes = 0;
+    }
+
+    int voter_count = get_int("Number of voters: ");
+
+    // Loop over all voters
+    for (int i = 0; i < voter_count; i++)
+    {
+        string name = get_string("Vote: ");
+
+        // Check for invalid vote
+        if (vote(name) == false)
+        {
+            printf("Invalid vote.\n");
+        }
+    }
+
+    print_winner();   // Display winner of election
+}
+
+// Update vote totals given a new vote
+bool vote(string names)
+{
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (strcmp(names, candidates[i].name) == 0)
+        {
+            candidates[i].votes = candidates[i].votes + 1;
+            return true;
+
+        }
+    }
+    return false;
+}
+
+// Print the winner (or winners) of the election
+void print_winner(void)
+{
+    int c = candidates[0].votes;
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (c < candidates[i].votes)
+        {
+            c = candidates[i].votes;
+        }
+        
+    }
+    for (int i = 0; i < candidate_count ; i++)
+    {
+        if (c == candidates[i].votes)
+        {
+            printf("%s\n", candidates[i].name);
+        }
+    }
+    return;
+}
